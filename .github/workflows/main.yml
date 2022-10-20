@@ -1,0 +1,39 @@
+# Build cargo repository for all platforms
+
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        name: Install Rust
+        with:
+          toolchain: stable
+          override: true
+
+      # Clone git repository
+      - name: Clone git repository
+        run: git clone https://github.com/plaans/aries.git --branch grpc-server --single-branch && cd aries
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+
+      # Copy binary to the github workspace
+      - name: Copy binary to the github workspace
+        run: cp target/release/up-server ../up-server
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update aries binary
+          commit_options: '--no-verify'
+          commit_user_name: github actions
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com

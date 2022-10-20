@@ -6,8 +6,43 @@ on:
   push:
 
 jobs:
-  build-linux-amd64:
+  # build-linux-amd64:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions-rs/toolchain@v1
+  #       name: Install Rust
+  #       with:
+  #         toolchain: stable
+  #         override: true
+
+  #     - name: Build Aries binary
+  #       run: |
+  #         git clone https://github.com/plaans/aries.git --branch grpc-server
+  #         mkdir -p bins
+  #         cd aries
+  #         cargo build --release
+  #         cp target/release/up-server ../bins/aries-linux-amd64
+  #         tree -L 2 ..
+
+  #     - uses: stefanzweifel/git-auto-commit-action@v4
+  #       with:
+  #         commit_message: Update aries binary for linux-amd64
+  #         commit_options: '--no-verify'
+  #         commit_user_name: github actions
+  #         commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+
+  #         file_pattern: 'bins/*' # Commit all files in the `bins` directory
+
+  build-linux:
     runs-on: ubuntu-latest
+    name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}
+
+    strategy:
+      matrix:
+        distro: [ubuntu20.04]
+        arch: [aarch64, armhf, amd64]
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -16,18 +51,19 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Build Aries binary
+      - name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
         run: |
           git clone https://github.com/plaans/aries.git --branch grpc-server
           mkdir -p bins
           cd aries
           cargo build --release
-          cp target/release/up-server ../bins/aries-linux-amd64
+          cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
           tree -L 2 ..
+          strip ../bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Update aries binary for linux-amd64
+          commit_message: update aries binary for ${{ matrix.distro }} for ${{ matrix.arch }}
           commit_options: '--no-verify'
           commit_user_name: github actions
           commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com

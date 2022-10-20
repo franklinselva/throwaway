@@ -60,7 +60,8 @@ jobs:
           cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
           tree -L 2 ..
           strip ../bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
-          cd .. && git pull origin --rebase # Rebase to avoid conflicts
+          cd .. && git stash && git pull origin --rebase # Rebase to avoid conflicts
+          git stash pop
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:

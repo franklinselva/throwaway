@@ -57,10 +57,11 @@ jobs:
           cd aries
           cargo build --release
           cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
-          tree -L 2 ..
-          strip ../bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
           cd ..
+          strip bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
           git add bins/aries-linux-${{ matrix.arch }}
+          git config --global user.name "github actions"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
           git pull --rebase
           git push

@@ -6,33 +6,7 @@ on:
   push:
 
 jobs:
-    # build-linux-amd64:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions-rs/toolchain@v1
-  #       name: Install Rust
-  #       with:
-  #         toolchain: stable
-  #         override: true
-
-  #     - name: Build Aries binary
-  #       run: |
-  #         git clone https://github.com/plaans/aries.git --branch grpc-server
-  #         mkdir -p bins
-  #         cd aries
-  #         cargo build --release
-  #         cp target/release/up-server ../bins/aries-linux-amd64
-  #         tree -L 2 ..
-
-  #     - uses: stefanzweifel/git-auto-commit-action@v4
-  #       with:
-  #         commit_message: Update aries binary for linux-amd64
-  #         commit_options: '--no-verify'
-  #         commit_user_name: github actions
-  #         commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
-
-  #         file_pattern: 'bins/*' # Commit all files in the `bins` directory
+  # TODO: add run on arch action
   build-linux:
     runs-on: ubuntu-latest
     name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}
@@ -66,11 +40,35 @@ jobs:
           git pull --rebase
           git push
 
-      # - uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     commit_message: update aries binary for ${{ matrix.distro }} for ${{ matrix.arch }}
-      #     commit_options: '--no-verify'
-      #     commit_user_name: github actions
-      #     commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+  build-macos:
+    runs-on: macos-latest
+    name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}
 
-      #     file_pattern: 'bins/*' # Commit all files in the `bins` directory
+    strategy:
+      matrix:
+        distro: [macos-latest]
+        arch: [amd64]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        name: Install Rust
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
+        run: |
+          git clone https://github.com/plaans/aries.git --branch grpc-server
+          mkdir -p bins
+          cd aries
+          cargo build --release
+          cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
+          cd ..
+          strip bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
+          git add bins/aries-linux-${{ matrix.arch }}
+          git config --global user.name "github actions"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
+          git pull --rebase
+          git push

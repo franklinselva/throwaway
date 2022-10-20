@@ -63,10 +63,43 @@ jobs:
           mkdir -p bins
           cd aries
           cargo build --release
-          cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
+          cp target/release/up-server ../bins/aries-macos-${{ matrix.arch }}
           cd ..
-          strip bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
-          git add bins/aries-linux-${{ matrix.arch }}
+          strip bins/aries-macos-${{ matrix.arch }} # Strip the binary to reduce size
+          git add bins/aries-macos-${{ matrix.arch }}
+          git config --global user.name "github actions"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
+          git pull --rebase
+          git push
+
+  build-windows:
+    runs-on: windows-latest
+    name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}
+
+    strategy:
+      matrix:
+        distro: [windows-latest]
+        arch: [amd64]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        name: Install Rust
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
+        run: |
+          git clone https://github.com/plaans/aries.git --branch grpc-server
+          mkdir -p bins
+          cd aries
+          cargo build --release
+          cp target/release/up-server.exe ../bins/aries-windows-${{ matrix.arch }}.exe
+          cd ..
+          strip bins/aries-windows-${{ matrix.arch }}.exe # Strip the binary to reduce size
+          git add bins/aries-windows-${{ matrix.arch }}.exe
           git config --global user.name "github actions"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"

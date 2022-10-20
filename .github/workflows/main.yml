@@ -18,11 +18,7 @@ jobs:
 
       # Clone git repository
       - name: Clone git repository
-        run: git clone https://github.com/plaans/aries.git --branch grpc-server && cd aries && git checkout grpc-server && pwd && ls -la
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release
+        run: git clone https://github.com/plaans/aries.git --branch grpc-server && cd aries && git checkout grpc-server && pwd && ls -la && cargo build --release
 
       # Copy binary to the github workspace
       - name: Copy binary to the github workspace

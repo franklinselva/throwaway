@@ -61,7 +61,7 @@ jobs:
           strip ../bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
           cd ..
           git add bins/aries-linux-${{ matrix.arch }}
-          git -c user.name="github actions" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
+          git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
           git pull --rebase
           git push
 

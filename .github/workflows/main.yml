@@ -4,8 +4,7 @@ name: Build
 
 on:
   push:
-    branches: [all]
-
+    
 jobs:
   build-linux:
     runs-on: ubuntu-latest

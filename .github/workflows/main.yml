@@ -4,9 +4,9 @@ name: Build
 
 on:
   push:
-    
+
 jobs:
-  build-linux:
+  build-linux-amd64:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,17 +16,18 @@ jobs:
           toolchain: stable
           override: true
 
-      # Clone git repository
-      - name: Clone git repository
-        run: git clone https://github.com/plaans/aries.git --branch grpc-server && cd aries && git checkout grpc-server && pwd && ls -la && cargo build --release
-
-      # Copy binary to the github workspace
-      - name: Copy binary to the github workspace
-        run: cp target/release/up-server ../up-server
+      - name: Build Aries binary
+        run: |
+          git clone https://github.com/plaans/aries.git --branch grpc-server
+          mkdir -p bins
+          cd aries
+          cargo build --release
+          cp target/release/up-server ../bins/aries-linux-amd64
+          tree -L 2 ..
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: Update aries binary
+          commit_message: Update aries binary for linux-amd64
           commit_options: '--no-verify'
           commit_user_name: github actions
           commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com

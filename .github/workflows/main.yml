@@ -20,7 +20,6 @@ jobs:
       - name: Clone git repository
         run: git clone https://github.com/plaans/aries.git --branch grpc-server --single-branch && cd aries
       - uses: actions-rs/cargo@v1
-        run: cd aries && cargo build --release
         with:
           command: build
           args: --release

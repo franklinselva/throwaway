@@ -93,7 +93,6 @@ jobs:
       - name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
         run: |
           git clone https://github.com/plaans/aries.git --branch grpc-server
-          mkdir -p bins
           cd aries
           cargo build --release
           cp target/release/up-server.exe ../bins/aries-windows-${{ matrix.arch }}.exe

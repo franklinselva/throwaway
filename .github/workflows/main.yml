@@ -29,7 +29,7 @@ jobs:
           git clone https://github.com/plaans/aries.git --branch grpc-server
           mkdir -p bins
           cd aries
-          cargo build --release
+          cargo build --release --bin up-server
           cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
           cd ..
           strip bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
@@ -62,7 +62,7 @@ jobs:
           git clone https://github.com/plaans/aries.git --branch grpc-server
           mkdir -p bins
           cd aries
-          cargo build --release
+          cargo build --release --bin up-server
           cp target/release/up-server ../bins/aries-macos-${{ matrix.arch }}
           cd ..
           strip bins/aries-macos-${{ matrix.arch }} # Strip the binary to reduce size
@@ -94,7 +94,7 @@ jobs:
         run: |
           git clone https://github.com/plaans/aries.git --branch grpc-server
           cd aries
-          cargo build --release
+          cargo build --release --bin up-server
           cp target/release/up-server.exe ../bins/aries-windows-${{ matrix.arch }}.exe
           cd ..
           strip bins/aries-windows-${{ matrix.arch }}.exe # Strip the binary to reduce size

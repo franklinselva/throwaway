@@ -66,7 +66,7 @@ jobs:
 
           setup: |
             sudo apt-get update
-            sudo apt-get install -y libssl-dev libudev-dev pkg-config curl
+            sudo apt-get install -y libssl-dev libudev-dev pkg-config curl git
             curl https://sh.rustup.rs -sSf | sh -s -- -y
             source $HOME/.cargo/env
 

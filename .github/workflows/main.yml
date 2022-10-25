@@ -65,7 +65,7 @@ jobs:
           arch: ${{ matrix.arch }}
           distro: ${{ matrix.distro }}
 
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          # githubToken: ${{ secrets.GITHUB_TOKEN }}
 
           setup: |
             sudo apt-get update

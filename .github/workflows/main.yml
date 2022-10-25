@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         distro: [ubuntu20.04]
-        arch: [amd64, aarch64]
+        arch: [amd64]
 
     steps:
       - uses: actions/checkout@v2
@@ -73,7 +73,7 @@ jobs:
           dockerRunArgs: |
             --privileged --volume "${PWD}:/workdir" --workdir /workdir
 
-          shell: bash
+          shell: /bin/sh
           run: |
             git clone https://github.com/plaans/aries.git --branch grpc-server
             mkdir -p bins

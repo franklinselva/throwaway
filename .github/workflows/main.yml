@@ -55,6 +55,9 @@ jobs:
         with:
           toolchain: stable
           override: true
+      - name: Clone Aries
+        run: |
+          git clone https://github.com/plaans/aries.git --branch grpc-server
       - uses: uraimo/run-on-arch-action@v2
         name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
         id: build
@@ -66,6 +69,7 @@ jobs:
 
           setup: |
             sudo apt-get update
+            sudo apt-get -y upgrade
             sudo apt-get install -y libssl-dev libudev-dev pkg-config curl git
             curl https://sh.rustup.rs -sSf | sh -s -- -y
             source $HOME/.cargo/env
@@ -75,7 +79,6 @@ jobs:
 
           shell: /bin/sh
           run: |
-            git clone https://github.com/plaans/aries.git --branch grpc-server
             mkdir -p bins
             cd aries
             cargo build --release --bin up-server
@@ -124,6 +127,7 @@ jobs:
           git pull --rebase
           git push
 
+    # FIXME: Windows prost-build fails to compile
   # build-windows:
   #   runs-on: windows-latest
   #   name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}

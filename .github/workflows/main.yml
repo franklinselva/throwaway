@@ -73,6 +73,8 @@ jobs:
             sudo apt-get install -y libssl-dev libudev-dev pkg-config curl git
             curl https://sh.rustup.rs -sSf | sh -s -- -y
             source $HOME/.cargo/env
+            echo "PATH=$PATH:$HOME/.cargo/bin" >> $GITHUB_ENV
+            lsb_release -a
 
           dockerRunArgs: |
             --privileged --volume "${PWD}:/workdir" --workdir /workdir
@@ -81,7 +83,7 @@ jobs:
           run: |
             mkdir -p bins
             cd aries
-            cargo build --release --bin up-server
+            $HOME/.cargo/env/cargo build --release --bin up-server
             cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
 
       - name: Upload Aries binary

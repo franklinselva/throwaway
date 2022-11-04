@@ -83,8 +83,8 @@ jobs:
           run: |
             mkdir -p bins
             cd aries
-            cargo --help
-            $HOME/.cargo/bin/cargo build --release --bin up-server
+            /home/runner/cargo --help
+            /home/runner/.cargo/bin/cargo build --release --bin up-server
             cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
 
       - name: Upload Aries binary

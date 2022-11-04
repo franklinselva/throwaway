@@ -75,17 +75,19 @@ jobs:
             source $HOME/.cargo/env
             echo "PATH=$PATH:$HOME/.cargo/bin" >> $GITHUB_ENV
             lsb_release -a
+            mkdir -p bins
+            cd aries
+            /home/runner/cargo --help
+            /home/runner/.cargo/bin/cargo build --release --bin up-server
+            cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
 
           dockerRunArgs: |
             --privileged --volume "${PWD}:/workdir" --workdir /workdir
 
           shell: /bin/sh
           run: |
-            mkdir -p bins
-            cd aries
-            /home/runner/cargo --help
-            /home/runner/.cargo/bin/cargo build --release --bin up-server
-            cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
+            echo "PATH=$PATH:$HOME/.cargo/bin" >> $GITHUB_ENV
+            cargo --help
 
       - name: Upload Aries binary
         run: |

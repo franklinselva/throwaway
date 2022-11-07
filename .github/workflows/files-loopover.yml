@@ -4,11 +4,26 @@ on:
   push:
 
 jobs:
-  file-loopover:
-    name: Loopover through pattern matching files
+  embed-code:
     runs-on: ubuntu-latest
     steps:
-      - name: Echo values from ENV
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+          fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+          ref: refs/heads/${{ github.head_ref }}
+
+      - name: Collect Markdowns
+        id: collect-markdowns
         run: |
           files=$(find -name '*.md' -print)
-          for file in $files; do echo $file; done
+          echo "{MARKDOWN_FILES}=($files)" >> $GITHUB_ENV
+
+      - name: Embed Code
+        uses: tokusumi/markdown-embed-code@main
+        with:
+          markdown: ${{ env.MARKDOWN_FILES }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          message: "Embed code in markdowns"
+          silent: true

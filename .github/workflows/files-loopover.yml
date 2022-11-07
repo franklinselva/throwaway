@@ -1,5 +1,8 @@
 name: Looping over values in Github Actions
 
+on:
+  push:
+
 env:
   VALUE_ARRAY_AS_STRING: 'README.md'
 

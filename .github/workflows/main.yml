@@ -8,7 +8,7 @@ on:
 jobs:
   build-linux-amd64:
     runs-on: ubuntu-latest
-    name: Build Aries on ${{ matrix.distro }}-${{ matrix.arch }}
+    name: Build Aries - ${{ matrix.distro }}-${{ matrix.arch }}
 
     strategy:
       matrix:
@@ -120,12 +120,17 @@ jobs:
           mkdir -p bins
           cd aries
           cargo build --release --bin up-server
+
           # Add CI Tests for aries
-          sudo apt-get install python3.8 python3.8-dev python3.8-venv
+          brew install python3.8 python3.8-dev python3.8-venv
           python3 ci/grpc.py
+
+          # Copy the binary to the bins folder
           cp target/release/up-server ../bins/aries-macos-${{ matrix.arch }}
           cd ..
           strip bins/aries-macos-${{ matrix.arch }} # Strip the binary to reduce size
+
+          # Upload the binary
           git add bins/aries-macos-${{ matrix.arch }}
           git config --global user.name "github actions"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -135,7 +140,7 @@ jobs:
 
   build-windows:
     runs-on: windows-latest
-    name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}
+    name: Build Aries - ${{ matrix.distro }}-${{ matrix.arch }}
 
     strategy:
       matrix:
@@ -150,7 +155,7 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
+      - name: Build Aries binary - ${{ matrix.distro }}-${{ matrix.arch }}
         run: |
           git clone https://github.com/plaans/aries.git --branch build-proto-def
           cd aries

@@ -6,50 +6,14 @@ on:
   push:
 
 jobs:
-  build-linux-amd64:
-    runs-on: ubuntu-latest
-    name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}
-
-    strategy:
-      matrix:
-        distro: [ubuntu20.04]
-        arch: [amd64]
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        name: Install Rust
-        with:
-          toolchain: stable
-          override: true
-
-      - name: Build Aries - ${{ matrix.distro }}-${{ matrix.arch }}
-        run: |
-          git clone https://github.com/plaans/aries.git --branch grpc-server
-          mkdir -p bins
-          cd aries
-          cargo build --release
-          # Add CI Tests for aries
-          sudo apt-get install python3.8 python3.8-dev python3.8-venv
-          python3 ci/grpc.py
-          cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
-          cd ..
-          strip bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
-          git add bins/aries-linux-${{ matrix.arch }}
-          git config --global user.name "github actions"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
-          git pull --rebase
-          git push
-
-  # build-linux-cross-compile:
+  # build-linux-amd64:
   #   runs-on: ubuntu-latest
-  #   name: Build Aries - ${{ matrix.distro }}-${{ matrix.arch }}
+  #   name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}
 
   #   strategy:
   #     matrix:
   #       distro: [ubuntu20.04]
-  #       arch: [armv7, aarch64]
+  #       arch: [amd64]
 
   #   steps:
   #     - uses: actions/checkout@v2
@@ -58,91 +22,93 @@ jobs:
   #       with:
   #         toolchain: stable
   #         override: true
-  #     - name: Clone Aries
+
+  #     - name: Build Aries - ${{ matrix.distro }}-${{ matrix.arch }}
   #       run: |
   #         git clone https://github.com/plaans/aries.git --branch grpc-server
-  #     - uses: uraimo/run-on-arch-action@v2
-  #       name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
-  #       id: build
-  #       with:
-  #         arch: ${{ matrix.arch }}
-  #         distro: ${{ matrix.distro }}
+  #         mkdir -p bins
+  #         cd aries
+  #         cargo build --release
+  #         # Add CI Tests for aries
+  #         sudo apt-get install python3.8 python3.8-dev python3.8-venv
+  #         python3 ci/grpc.py
+  #         cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
+  #         cd ..
+  #         strip bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
+  #         git add bins/aries-linux-${{ matrix.arch }}
+  #         git config --global user.name "github actions"
+  #         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+  #         git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
+  #         git pull --rebase
+  #         git push
 
-  #         # githubToken: ${{ secrets.GITHUB_TOKEN }}
+  # # build-linux-cross-compile:
+  # #   runs-on: ubuntu-latest
+  # #   name: Build Aries - ${{ matrix.distro }}-${{ matrix.arch }}
 
-  #         setup: |
-  #           sudo apt-get update
-  #           sudo apt-get -y upgrade
-  #           sudo apt-get install -y libssl-dev libudev-dev pkg-config curl git
-  #           curl https://sh.rustup.rs -sSf | sh -s -- -y
-  #           source $HOME/.cargo/env
-  #           echo "PATH=$PATH:$HOME/.cargo/bin" >> $GITHUB_ENV
-  #           lsb_release -a
-  #           mkdir -p bins
-  #           cd aries
-  #           /home/runner/cargo --help
-  #           /home/runner/.cargo/bin/cargo build --release --bin up-server
-  #           cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
+  # #   strategy:
+  # #     matrix:
+  # #       distro: [ubuntu20.04]
+  # #       arch: [armv7, aarch64]
 
-  #         dockerRunArgs: |
-  #           --privileged --volume "${PWD}:/workdir" --workdir /workdir
+  # #   steps:
+  # #     - uses: actions/checkout@v2
+  # #     - uses: actions-rs/toolchain@v1
+  # #       name: Install Rust
+  # #       with:
+  # #         toolchain: stable
+  # #         override: true
+  # #     - name: Clone Aries
+  # #       run: |
+  # #         git clone https://github.com/plaans/aries.git --branch grpc-server
+  # #     - uses: uraimo/run-on-arch-action@v2
+  # #       name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
+  # #       id: build
+  # #       with:
+  # #         arch: ${{ matrix.arch }}
+  # #         distro: ${{ matrix.distro }}
 
-  #         shell: /bin/sh
-  #         run: |
-  #           echo "PATH=$PATH:$HOME/.cargo/bin" >> $GITHUB_ENV
-  #           cargo --help
+  # #         # githubToken: ${{ secrets.GITHUB_TOKEN }}
 
-  #     - name: Upload Aries binary
-  #       run: |
-  #           strip bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
-  #           git add bins/aries-linux-${{ matrix.arch }}
-  #           git config --global user.name "github actions"
-  #           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-  #           git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
-  #           git pull --rebase
-  #           git push
+  # #         setup: |
+  # #           sudo apt-get update
+  # #           sudo apt-get -y upgrade
+  # #           sudo apt-get install -y libssl-dev libudev-dev pkg-config curl git
+  # #           curl https://sh.rustup.rs -sSf | sh -s -- -y
+  # #           source $HOME/.cargo/env
+  # #           echo "PATH=$PATH:$HOME/.cargo/bin" >> $GITHUB_ENV
+  # #           lsb_release -a
+  # #           mkdir -p bins
+  # #           cd aries
+  # #           /home/runner/cargo --help
+  # #           /home/runner/.cargo/bin/cargo build --release --bin up-server
+  # #           cp target/release/up-server ../bins/aries-linux-${{ matrix.arch }}
 
-  build-macos:
-    runs-on: macos-latest
-    name: Build Aries - ${{ matrix.distro }}-${{ matrix.arch }}
+  # #         dockerRunArgs: |
+  # #           --privileged --volume "${PWD}:/workdir" --workdir /workdir
 
-    strategy:
-      matrix:
-        distro: [macos-latest]
-        arch: [amd64]
+  # #         shell: /bin/sh
+  # #         run: |
+  # #           echo "PATH=$PATH:$HOME/.cargo/bin" >> $GITHUB_ENV
+  # #           cargo --help
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        name: Install Rust
-        with:
-          toolchain: stable
-          override: true
+  # #     - name: Upload Aries binary
+  # #       run: |
+  # #           strip bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
+  # #           git add bins/aries-linux-${{ matrix.arch }}
+  # #           git config --global user.name "github actions"
+  # #           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+  # #           git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
+  # #           git pull --rebase
+  # #           git push
 
-      - name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
-        run: |
-          git clone https://github.com/plaans/aries.git --branch grpc-server
-          mkdir -p bins
-          cd aries
-          cargo build --release --bin up-server
-          cp target/release/up-server ../bins/aries-macos-${{ matrix.arch }}
-          cd ..
-          strip bins/aries-macos-${{ matrix.arch }} # Strip the binary to reduce size
-          git add bins/aries-macos-${{ matrix.arch }}
-          git config --global user.name "github actions"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
-          git pull --rebase
-          git push
-
-    # FIXME: Windows prost-build fails to compile
-  # build-windows:
-  #   runs-on: windows-latest
-  #   name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}
+  # build-macos:
+  #   runs-on: macos-latest
+  #   name: Build Aries - ${{ matrix.distro }}-${{ matrix.arch }}
 
   #   strategy:
   #     matrix:
-  #       distro: [windows-latest]
+  #       distro: [macos-latest]
   #       arch: [amd64]
 
   #   steps:
@@ -156,14 +122,48 @@ jobs:
   #     - name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
   #       run: |
   #         git clone https://github.com/plaans/aries.git --branch grpc-server
+  #         mkdir -p bins
   #         cd aries
   #         cargo build --release --bin up-server
-  #         cp target/release/up-server.exe ../bins/aries-windows-${{ matrix.arch }}.exe
+  #         cp target/release/up-server ../bins/aries-macos-${{ matrix.arch }}
   #         cd ..
-  #         strip bins/aries-windows-${{ matrix.arch }}.exe # Strip the binary to reduce size
-  #         git add bins/aries-windows-${{ matrix.arch }}.exe
+  #         strip bins/aries-macos-${{ matrix.arch }} # Strip the binary to reduce size
+  #         git add bins/aries-macos-${{ matrix.arch }}
   #         git config --global user.name "github actions"
   #         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
   #         git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
   #         git pull --rebase
   #         git push
+
+    # FIXME: Windows prost-build fails to compile
+  build-windows:
+    runs-on: windows-latest
+    name: Build Aries on ${{ matrix.distro }} for ${{ matrix.arch }}
+
+    strategy:
+      matrix:
+        distro: [windows-latest]
+        arch: [amd64]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        name: Install Rust
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Build Aries binary on ${{ matrix.distro }} for ${{ matrix.arch }}
+        run: |
+          git clone https://github.com/plaans/aries.git --branch build-proto-def
+          cd aries
+          cargo build --release --bin up-server
+          cp target/release/up-server.exe ../bins/aries-windows-${{ matrix.arch }}.exe
+          cd ..
+          strip bins/aries-windows-${{ matrix.arch }}.exe # Strip the binary to reduce size
+          git add bins/aries-windows-${{ matrix.arch }}.exe
+          git config --global user.name "github actions"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
+          git pull --rebase
+          git push

@@ -29,7 +29,7 @@ jobs:
           cd aries
           cargo build --release
           # Add CI Tests for aries
-          sudo apt-get install python3.8 python3.8-dev
+          sudo apt-get install python3
           python3 ci/grpc.py
           cp target/release/up-server ../up_aries/bins/aries-linux-${{ matrix.arch }}
           cd ..
@@ -73,7 +73,7 @@ jobs:
               cd aries
             cargo build --release --bin up-server
             # Add CI Tests for aries
-            sudo apt-get install python3.8 python3.8-dev
+            sudo apt-get install python3
             python3 ci/grpc.py
             cp target/release/up-server ../up_aries/bins/aries-linux-${{ matrix.arch }}
 

@@ -6,7 +6,7 @@ arch=$1
 os=$2
 
 # Get the list of modified files
-modified_files=$(git diff-tree --no-commit-id --name-only -r HEAD)
+modified_files=$(git diff --name-only $dir_name)
 
 # Check if the directory was modified
 if echo "$modified_files" | grep -q "$dir_name"; then

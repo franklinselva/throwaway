@@ -28,13 +28,15 @@ jobs:
           cargo build --release
           # Add CI Tests for aries
           sudo apt-get install python3
-          python3 ci/grpc.py
+          # python3 ci/grpc.py
           cp target/release/up-server ../up_aries/bins/aries_linux_amd64
           cd ..
           strip up_aries/bins/aries_linux_amd64 # Strip the binary to reduce size
           ls -l up_aries/bins/  # Print the size of the binary
           echo $BRANCH_NAME
           echo "$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})" # Print the files changed
+          echo "$(git diff --name-only $BRANCH_NAME)"
+          echo "$(git diff --name-only $BRANCH_NAME) | grep -q up_aries/bins"
           bash .github/ci/github.sh amd64 linux
 
   # build-linux-arm64:

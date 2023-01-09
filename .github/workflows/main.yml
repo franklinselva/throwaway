@@ -29,8 +29,7 @@ jobs:
           cp target/release/up-server ../up_aries/bins/aries_linux_amd64
           cd ..
           strip up_aries/bins/aries_linux_amd64 # Strip the binary to reduce size
-          git diff --name-only up_aries
-          git diff --name-only .
+          echo "$(git diff --name-only up_aries)" # Print the files that have changed
           bash .github/ci/github.sh amd64 linux
 
   # build-linux-arm64:

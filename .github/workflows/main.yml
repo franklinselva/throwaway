@@ -34,12 +34,7 @@ jobs:
           cp target/release/up-server ../up_aries/bins/aries-linux-${{ matrix.arch }}
           cd ..
           strip up_aries/bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
-          git add up_aries/bins/aries-linux-${{ matrix.arch }}
-          git config --global user.name "github actions"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
-          git pull --rebase
-          git push
+          bash .github/ci/github.sh ${{ matrix.arch}} ${{ matrix.distro }}
   build-linux-cross-compile:
     runs-on: ubuntu-latest
     name: Build Aries - ${{ matrix.distro }}-${{ matrix.arch }}
@@ -86,13 +81,8 @@ jobs:
 
       - name: Upload Aries binary
         run: |
-            strip up_aries/bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
-            git add up_aries/bins/aries-linux-${{ matrix.arch }}
-            git config --global user.name "github actions"
-            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
-            git pull --rebase
-            git push
+          strip up_aries/bins/aries-linux-${{ matrix.arch }} # Strip the binary to reduce size
+          bash .github/ci/github.sh ${{ matrix.arch}} ${{ matrix.distro }}
 
   build-macos:
     runs-on: macos-latest
@@ -127,12 +117,7 @@ jobs:
           strip up_aries/bins/aries-macos-${{ matrix.arch }} # Strip the binary to reduce size
 
           # Upload the binary
-          git add up_aries/bins/aries-macos-${{ matrix.arch }}
-          git config --global user.name "github actions"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
-          git pull --rebase
-          git push
+          bash .github/ci/github.sh ${{ matrix.arch}} ${{ matrix.distro }}
 
   build-windows:
     runs-on: windows-latest
@@ -159,9 +144,4 @@ jobs:
           cp target/release/up-server.exe ../up_aries/bins/aries-windows-${{ matrix.arch }}.exe
           cd ..
           strip up_aries/bins/aries-windows-${{ matrix.arch }}.exe # Strip the binary to reduce size
-          git add up_aries/bins/aries-windows-${{ matrix.arch }}.exe
-          git config --global user.name "github actions"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -m "update aries binary for ${{ matrix.distro }}-${{ matrix.arch }}"
-          git pull --rebase
-          git push
+          bash .github/ci/github.sh ${{ matrix.arch}} ${{ matrix.distro }}

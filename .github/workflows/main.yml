@@ -100,8 +100,8 @@ jobs:
 
     strategy:
       matrix:
-        distro: [macos-latest]
-        arch: [amd64]
+        distro: [macos-latest, macos-arm64]
+        arch: [amd64, arm64]
 
     steps:
       - uses: actions/checkout@v2

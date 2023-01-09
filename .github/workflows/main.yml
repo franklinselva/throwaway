@@ -26,9 +26,6 @@ jobs:
           # Add CI Tests for aries
           sudo apt-get install python3
           python3 ci/grpc.py
-
-      - name: Upload Aries binary
-        run: |
           cp target/release/up-server ../up_aries/bins/aries_linux_amd64
           cd ..
           strip up_aries/bins/aries-linux-amd64 # Strip the binary to reduce size
@@ -100,8 +97,6 @@ jobs:
           brew install python@3.8
           python3 ci/grpc.py
 
-      - name: Upload Aries binary
-        run: |
           # Copy the binary to the bins folder
           cp target/release/up-server ../up_aries/bins/aries_macos_amd64
           cd ..
@@ -132,8 +127,6 @@ jobs:
           brew install python@3.8
           python3 ci/grpc.py
 
-      - name: Upload Aries binary
-        run: |
           # Copy the binary to the bins folder
           cp target/release/up-server ../up_aries/bins/aries_macos_aarch64
           cd ..
@@ -160,8 +153,6 @@ jobs:
           cd aries
           cargo build --release --bin up-server
 
-      - name: Upload Aries binary
-        run: |
           cp target/release/up-server.exe ../up_aries/bins/aries_windows_amd64.exe
           cd ..
           strip up_aries/bins/aries_windows_amd64.exe # Strip the binary to reduce size
